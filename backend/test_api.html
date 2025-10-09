@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Тест системи оцінки здібностей</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        button:hover { background: #45a049; transform: translateY(-2px); }
+        button:disabled { background: #666; cursor: not-allowed; transform: none; }
+        .results {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .ability-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .ability-name { width: 120px; font-weight: bold; }
+        .bar-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 20px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success { background: rgba(76, 175, 80, 0.3); }
+        .status.error { background: rgba(244, 67, 54, 0.3); }
+        .status.info { background: rgba(33, 150, 243, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Інноваційна система оцінки здібностей</h1>
+        
+        <div class="step">
+            <h3>📊 Крок 1: Перевірити статус системи</h3>
+            <button onclick="checkHealth()">Перевірити здоров'я API</button>
+            <div id="health-status"></div>
+        </div>
+
+        <div class="step">
+            <h3>🎮 Крок 2: Створити тестову сесію</h3>
+            <button onclick="startSession()">Розпочати нову сесію</button>
+            <div id="session-info"></div>
+        </div>
+
+        <div class="step">
+            <h3>🎯 Крок 3: Симулювати тестові дані</h3>
+            <button onclick="simulateGameplay()" id="simulate-btn" disabled>Симулювати гру</button>
+            <div id="simulation-log"></div>
+        </div>
+
+        <div class="step">
+            <h3>🤖 Крок 4: Проаналізувати здібності</h3>
+            <button onclick="analyzeSession()" id="analyze-btn" disabled>Аналізувати з AI</button>
+            <div id="analysis-results"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentSessionId = null;
+        const API_BASE = 'http://127.0.0.1:8000';
+
+        // Функції для роботи з API
+        async function checkHealth() {
+            try {
+                showStatus('health-status', 'Перевіряю...', 'info');
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                let statusHtml = `
+                    <div class="status success">
+                        ✅ API: ${data.api}<br>
+                        🤖 LLaMA: ${data.llama}<br>
+                        ⏰ Час: ${new Date(data.timestamp).toLocaleString('uk-UA')}
+                    </div>
+                `;
+                document.getElementById('health-status').innerHTML = statusHtml;
+                
+            } catch (error) {
+                showStatus('health-status', `❌ Помилка: ${error.message}`, 'error');
+            }
+        }
+
+        async function startSession() {
+            try {
+                showStatus('session-info', 'Створюю сесію...', 'info');
+                const response = await fetch(`${API_BASE}/session/start`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                currentSessionId = data.session_id;
+                
+                showStatus('session-info', `✅ Сесія створена: ${currentSessionId}`, 'success');
+                document.getElementById('simulate-btn').disabled = false;
+                
+            } catch (error) {
+                showStatus('session-info', `❌ Помилка: ${error.message}`, 'error');
+            }
+        }
+
+        async function simulateGameplay() {
+            if (!currentSessionId) return;
+            
+            try {
+                showStatus('simulation-log', 'Симулюю ігрові дії...', 'info');
+                
+                // Симулюємо різні ігрові події
+                const events = [
+                    {
+                        event_type: 'click',
+                        timestamp: Date.now() / 1000,
+                        data: { x: 300, y: 200, target: 'start_button', reaction_time: 0.8 }
+                    },
+                    {
+                        event_type: 'choice',
+                        timestamp: Date.now() / 1000 + 2,
+                        data: { choice: 'analytical', choice_category: 'thinking_style', time_taken: 3.2 }
+                    },
+                    {
+                        event_type: 'mouse_move', 
+                        timestamp: Date.now() / 1000 + 4,
+                        data: { x: 450, y: 350, path_length: 200 }
+                    },
+                    {
+                        event_type: 'creative_input',
+                        timestamp: Date.now() / 1000 + 6,
+                        data: { input_type: 'text', content: 'Інноваційна гра для оцінки здібностей через поведінку' }
+                    }
+                ];
+
+                // Відправляємо події
+                for (let event of events) {
+                    await fetch(`${API_BASE}/session/${currentSessionId}/event`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(event)
+                    });
+                }
+
+                // Відправляємо відповіді
+                const responses = {
+                    q1: "Я аналізую проблему систематично",
+                    q2: "Люблю експериментувати з новими ідеями", 
+                    q3: "Вважаю за краще прямі рішення"
+                };
+
+                await fetch(`${API_BASE}/session/${currentSessionId}/response`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(responses)
+                });
+
+                showStatus('simulation-log', `✅ Симульовано ${events.length} подій та відповідей`, 'success');
+                document.getElementById('analyze-btn').disabled = false;
+                
+            } catch (error) {
+                showStatus('simulation-log', `❌ Помилка: ${error.message}`, 'error');
+            }
+        }
+
+        async function analyzeSession() {
+            if (!currentSessionId) return;
+            
+            try {
+                showStatus('analysis-results', 'AI аналізує дані... (це може зайняти 10-30 секунд)', 'info');
+                
+                const response = await fetch(`${API_BASE}/session/${currentSessionId}/analyze`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                displayResults(data);
+                
+            } catch (error) {
+                showStatus('analysis-results', `❌ Помилка аналізу: ${error.message}`, 'error');
+            }
+        }
+
+        function displayResults(data) {
+            const abilities = [
+                { name: 'Аналітичні', key: 'analytical', color: '#2196F3' },
+                { name: 'Творчі', key: 'creative', color: '#9C27B0' },
+                { name: 'Соціальні', key: 'social', color: '#4CAF50' },
+                { name: 'Технічні', key: 'technical', color: '#FF9800' },
+                { name: 'Дослідницькі', key: 'research', color: '#F44336' }
+            ];
+
+            let html = `<h3>🎯 Результати оцінки здібностей:</h3>`;
+            
+            abilities.forEach(ability => {
+                const score = data[ability.key] || 0;
+                html += `
+                    <div class="ability-bar">
+                        <div class="ability-name">${ability.name}:</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: ${score}%; background-color: ${ability.color};"></div>
+                        </div>
+                        <div style="width: 60px; text-align: right; font-weight: bold;">${score.toFixed(1)}%</div>
+                    </div>
+                `;
+            });
+
+            html += `<div style="margin-top: 20px;">`;
+            html += `<strong>🎯 Рівень довіри:</strong> ${((data.confidence || 0) * 100).toFixed(1)}%<br><br>`;
+            html += `<strong>💡 Інсайти:</strong><ul>`;
+            (data.insights || []).forEach(insight => {
+                html += `<li>${insight}</li>`;
+            });
+            html += `</ul></div>`;
+
+            document.getElementById('analysis-results').innerHTML = html;
+        }
+
+        function showStatus(elementId, message, type) {
+            document.getElementById(elementId).innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        // Автоматично перевіряємо здоров'я при завантаженні
+        window.onload = () => {
+            setTimeout(checkHealth, 500);
+        };
+    </script>
+</body>
+</html>
