@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.game-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.game-header p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Прогрес бар */
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    margin: 20px 0 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #2196F3);
+    border-radius: 5px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+}
+
+.stage-counter {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* Контейнер гри */
+#gameContainer {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    min-height: 500px;
+}
+
+/* Етап */
+.stage-container {
+    animation: fadeIn 0.6s ease-in;
+}
+
+.stage-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stage-icon {
+    font-size: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 15px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage-title {
+    font-size: 28px;
+    flex: 1;
+}
+
+.question {
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+/* Вибір відповідей */
+.choices-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.choice-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 16px;
+    text-align: left;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.choice-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.choice-button.selected {
+    background: rgba(76, 175, 80, 0.3);
+    border-color: #4CAF50;
+    transform: scale(1.02);
+}
+
+/* Екран завантаження */
+.loading-screen {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 30px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-screen h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.loading-screen p {
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+/* Екран результатів */
+.results-screen {
+    animation: fadeIn 0.8s ease-in;
+}
+
+.results-screen h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.confidence-indicator {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.confidence-indicator strong {
+    color: #FFE082;
+    font-size: 20px;
+}
+
+/* Діаграма здібностей */
+.abilities-chart {
+    margin: 30px 0;
+}
+
+.ability-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 60px;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.ability-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ability-bar-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    height: 30px;
+    overflow: hidden;
+}
+
+.ability-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+}
+
+.ability-value {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Топ здібності */
+.top-abilities {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 30px 0;
+}
+
+.top-abilities h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.top-abilities ol {
+    list-style-position: inside;
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.top-abilities li {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+/* Інсайти */
+.insights {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 30px 0;
+}
+
+.insights h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.insights ul {
+    list-style: none;
+}
+
+.insights li {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.insights li:before {
+    content: "💡 ";
+    margin-right: 10px;
+}
+
+/* Кнопка перезапуску */
+.restart-button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 30px auto 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.restart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Екран помилки */
+.error-screen {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.error-screen h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #FF9800;
+}
+
+.error-screen p {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.error-details {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Анімації */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    #gameContainer {
+        padding: 20px;
+    }
+    
+    .stage-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 32px;
+    }
+    
+    .stage-title {
+        font-size: 22px;
+    }
+    
+    .question {
+        font-size: 18px;
+    }
+    
+    .choice-button {
+        font-size: 14px;
+        padding: 15px;
+    }
+    
+    .ability-row {
+        grid-template-columns: 120px 1fr 50px;
+        gap: 10px;
+    }
+}
